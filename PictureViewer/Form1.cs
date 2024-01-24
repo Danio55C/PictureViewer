@@ -18,8 +18,8 @@ namespace PictureViewer
 
         private void btnLoadPicture_Click(object sender, EventArgs e)
         {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-
+            using (OpenFileDialog fileDialog = new OpenFileDialog())
+            { 
             fileDialog.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp; *.png)|*.jpg; *.jpeg; *.gif; *.bmp; *.png";
 
             if (fileDialog.ShowDialog() == DialogResult.OK)
@@ -33,6 +33,7 @@ namespace PictureViewer
                 File.WriteAllText(_path, filePath);
             }
         }
+    }
         private void btnDeletePicture_Click(object sender, EventArgs e)
         {
             pbxPictureViewer.Image = null;
@@ -43,10 +44,14 @@ namespace PictureViewer
         }
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (!File.Exists(_path))
+                File.Create(_path).Close();
+            
             pbxPictureViewer.ImageLocation = File.ReadAllText(_path);
             tbfilePath.Text = File.ReadAllText(_path);
             if (tbfilePath.Text == "File Path")
                 DisableDeleteButton();
+            
         }
         private void DisableDeleteButton()
         {
